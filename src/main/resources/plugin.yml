@@ -1,0 +1,16 @@
+name: CowCannon
+version: '1.0'
+main: me.levple.cowcannon.CowCannon
+api-version: '1.21'
+commands:
+  heal:
+    description: "Heilung des Spielers"
+  setspawnblock:
+    description: "Setzt einen Block an die Stelle <x>, <y>, <z>"
+  cooldown:
+    description: "Setzt einen einfachen Cooldown."
+  clock:
+    description: "Setzt eine Uhr."
+    usage: "/clock [toggle] [pause] [remove]"
+  start:
+    description: "Startet das Game."

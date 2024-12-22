@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" build-on-make="true" name="CowCannon">
+    <output-path>$USER_HOME$/Desktop/Paper_Server/plugins</output-path>
+    <root id="archive" name="CowCannon.jar">
+      <element id="module-output" name="CowCannon" />
+    </root>
+  </artifact>
+</component>

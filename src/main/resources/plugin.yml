@@ -14,3 +14,7 @@ commands:
     usage: "/clock [toggle] [pause] [remove]"
   start:
     description: "Startet das Game."
+  worldborder:
+    description: "Setzt eine World Border oder lädt eine World Border."
+  particleworldborder:
+    description: "Setzt eine Particle 'World Border."

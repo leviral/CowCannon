@@ -11,7 +11,7 @@ public class JoinCounter implements Listener {
 
     private final static JoinCounter instance = new JoinCounter();
 
-    public JoinCounter() {
+    private JoinCounter() {
     }
 
     private File file;

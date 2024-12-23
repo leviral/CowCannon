@@ -1,6 +1,7 @@
 package me.levple.cowcannon;
 
 import me.levple.cowcannon.commands.*;
+import me.levple.cowcannon.gui.GameSettings;
 import me.levple.cowcannon.gui.JoinCounter;
 import me.levple.cowcannon.listeners.PlayerJoin;
 import me.levple.cowcannon.listeners.PlayerQuit;
@@ -29,6 +30,7 @@ public final class CowCannon extends JavaPlugin {
         instance = this;
         this.config = getConfig();
         JoinCounter.getInstance().load();
+        GameSettings.getInstance().load();
         registerCommands();
         registerListeners();
         registerTabCompletions();
@@ -46,6 +48,8 @@ public final class CowCannon extends JavaPlugin {
         getCommand("cooldown").setExecutor(new CooldownCommand());
         getCommand("clock").setExecutor(new ClockCommand(this));
         getCommand("start").setExecutor(new StartCommand(this));
+        getCommand("worldborder").setExecutor(new WorldBorderCommand(this));
+        getCommand("particleworldborder").setExecutor(new ParticleWorldBorderCommand());
     }
 
     private void registerListeners(){
@@ -56,6 +60,8 @@ public final class CowCannon extends JavaPlugin {
     private void registerTabCompletions(){
         getCommand("setspawnblock").setTabCompleter(new SpawnPlaceCommand());
         getCommand("clock").setTabCompleter(new ClockCommand(this));
+        getCommand("worldborder").setTabCompleter(new WorldBorderCommand(this));
+        getCommand("particleworldborder").setTabCompleter(new ParticleWorldBorderCommand());
     }
 
 }

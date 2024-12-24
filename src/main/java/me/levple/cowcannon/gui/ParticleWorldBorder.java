@@ -7,18 +7,23 @@ import org.bukkit.World;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 
+import java.util.Random;
+
 public class ParticleWorldBorder {
 
     private ParticleWorldBorder() {
     }
+
     private final static ParticleWorldBorder instance = new ParticleWorldBorder();
 
-    private final Particle particleType = Particle.FLAME;
+    private final Random random = new Random();
 
-    public void startParticleBorder(World world, double borderRadius, Location borderCenter) {
+    public BukkitTask task;
+
+    public void startParticleBorder(World world, double borderRadius, Location borderCenter, Particle particleType, double centerX, double centerZ, int particleCount) {
         int minY = world.getMinHeight();
         int maxY = world.getMaxHeight();
-        BukkitTask task = new BukkitRunnable() {
+        task = new BukkitRunnable() {
 
             @Override
             public void run() {
@@ -29,18 +34,22 @@ public class ParticleWorldBorder {
                     return;
                 }
 
-                for (double theta = 0; theta < 2 * Math.PI; theta += Math.PI / 32) {
-                    double x = Math.cos(theta) * borderRadius;
-                    double z = Math.sin(theta) * borderRadius;
-                    for (double y = minY; y <= maxY; y++) {
-                        Location particleLocation = borderCenter.clone().add(x, 2*y, z);
+                for (int i = 0; i < particleCount; i++) {
+                    double theta = random.nextDouble() * Math.PI * 2;
+                    double x = centerX + borderRadius * Math.cos(theta);
+                    double z = centerZ + borderRadius * Math.sin(theta);
+                    for (double y = minY; y <= maxY; y+= 3) {
+                        Location particleLocation = new Location(world, x, y, z);
                         world.spawnParticle(particleType, particleLocation, 1, 0, 0, 0, 0);
                     }
                 }
             }
-        }.runTaskTimer(CowCannon.getInstance(), 0, 10);
+        }.runTaskTimer(CowCannon.getInstance(), 0, 40);
     }
 
+    public BukkitTask getTask() {
+        return task;
+    }
 
     public static ParticleWorldBorder getInstance() {
         return instance;

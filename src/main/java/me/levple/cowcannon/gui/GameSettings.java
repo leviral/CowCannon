@@ -42,52 +42,71 @@ public class GameSettings {
     }
 
     public void setWorldBorder(String world, Location location, Double radius, Double damageBuffer, Double damageAmount){
-        if (!config.contains("worldborder.world"))
-            config.createSection("worldborder.world");
-        if (!config.contains("worldborder.locationX")) {
-            config.createSection("worldborder.locationX");
+        if (!config.contains("worldBorder.world"))
+            config.createSection("worldBorder.world");
+        if (!config.contains("worldBorder.locationX")) {
+            config.createSection("worldBorder.locationX");
         }
-        if (!config.contains("worldborder.locationZ")) {
-            config.createSection("worldborder.locationZ");
+        if (!config.contains("worldBorder.locationZ")) {
+            config.createSection("worldBorder.locationZ");
         }
-        if (!config.contains("worldborder.radius")) {
-            config.createSection("worldborder.radius");
+        if (!config.contains("worldBorder.radius")) {
+            config.createSection("worldBorder.radius");
         }
-        if (!config.contains("worldborder.damageBuffer")) {
-            config.createSection("worldborder.damageBuffer");
+        if (!config.contains("worldBorder.damageBuffer")) {
+            config.createSection("worldBorder.damageBuffer");
         }
-        if (!config.contains("worldborder.damageAmount")) {
-            config.createSection("worldborder.damageAmount");
+        if (!config.contains("worldBorder.damageAmount")) {
+            config.createSection("worldBorder.damageAmount");
         }
-        config.set("worldborder.world", world);
-        config.set("worldborder.locationX", location.getX());
-        config.set("worldborder.locationZ", location.getZ());
-        config.set("worldborder.radius", radius);
-        config.set("worldborder.damageBuffer", damageBuffer);
-        config.set("worldborder.damageAmount", damageAmount);
+        config.set("worldBorder.world", world);
+        config.set("worldBorder.locationX", location.getX());
+        config.set("worldBorder.locationZ", location.getZ());
+        config.set("worldBorder.radius", radius);
+        config.set("worldBorder.damageBuffer", damageBuffer);
+        config.set("worldBorder.damageAmount", damageAmount);
         save();
     }
 
-    public void setParticleBorder(String world, Location location, Double radius) {
-        if (!config.contains("particleborder.world"))
-            config.createSection("particleborder.world");
-        if (!config.contains("particleborder.centerX")) {
-            config.createSection("particleborder.centerX");
+    public void setParticleBorder(String world, Location location, Double radius, String particleType, Integer particleCount) {
+        if (!config.contains("particleBorder.world"))
+            config.createSection("particleBorder.world");
+        if (!config.contains("particleBorder.centerX")) {
+            config.createSection("particleBorder.centerX");
         }
-        if (!config.contains("particleborder.centerY")) {
-            config.createSection("particleborder.centerY");
+        if (!config.contains("particleBorder.centerY")) {
+            config.createSection("particleBorder.centerY");
         }
-        if (!config.contains("particleborder.centerZ")) {
-            config.createSection("particleborder.centerZ");
+        if (!config.contains("particleBorder.centerZ")) {
+            config.createSection("particleBorder.centerZ");
         }
-        if (!config.contains("particleborder.radius")) {
-            config.createSection("particleborder.radius");
+        if (!config.contains("particleBorder.radius")) {
+            config.createSection("particleBorder.radius");
         }
-        config.set("particleborder.world", world);
-        config.set("particleborder.centerX", location.getX());
-        config.set("particleborder.centerY", location.getY());
-        config.set("particleborder.centerZ", location.getZ());
-        config.set("particleborder.radius", radius);
+        if (!config.contains("particleBorder.particleType")) {
+            config.createSection("particleBorder.particleType");
+        }
+        if (!config.contains("particleBorder.particleCount")) {
+            config.createSection("particleBorder.particleCount");
+        }
+        config.set("particleBorder.world", world);
+        config.set("particleBorder.centerX", location.getX());
+        config.set("particleBorder.centerY", location.getY());
+        config.set("particleBorder.centerZ", location.getZ());
+        config.set("particleBorder.radius", radius);
+        config.set("particleBorder.particleType", particleType);
+        config.set("particleBorder.particleCount", particleCount);
+        save();
+    }
+
+    public void removeParticleBorder() {
+        config.set("particleBorder.world", null);
+        config.set("particleBorder.centerX", null);
+        config.set("particleBorder.centerY", null);
+        config.set("particleBorder.centerZ", null);
+        config.set("particleBorder.radius", null);
+        config.set("particleBorder.particleType", null);
+        config.set("particleBorder.particleCount", null);
         save();
     }
 

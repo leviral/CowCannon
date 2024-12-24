@@ -29,12 +29,12 @@ public class WorldBorder {
     public void loadWorldBorder(Player player) {
         YamlConfiguration config = GameSettings.getInstance().getConfig();
         try {
-            World world = Bukkit.getWorld(config.getString("worldborder.world"));
-            Double x = config.getDouble("worldborder.locationX");
-            Double z = config.getDouble("worldborder.locationZ");
-            Double radius = config.getDouble("worldborder.radius");
-            Double damageBuffer = config.getDouble("worldborder.damageBuffer");
-            Double damageAmount = config.getDouble("worldborder.damageAmount");
+            World world = Bukkit.getWorld(config.getString("worldBorder.world"));
+            double x = config.getDouble("worldBorder.locationX");
+            double z = config.getDouble("worldBorder.locationZ");
+            double radius = config.getDouble("worldBorder.radius");
+            double damageBuffer = config.getDouble("worldBorder.damageBuffer");
+            double damageAmount = config.getDouble("worldBorder.damageAmount");
 
             org.bukkit.WorldBorder border = world.getWorldBorder();
             border.setCenter(x, z);
@@ -42,7 +42,7 @@ public class WorldBorder {
             border.setWarningDistance(10);
             border.setDamageBuffer(damageBuffer);
             border.setDamageAmount(damageAmount);
-            player.sendMessage(Component.text("WorldBorder wurde erfolgreich geladen.", NamedTextColor.GREEN));
+            player.sendMessage(Component.text("Die World Border wurde erfolgreich geladen.", NamedTextColor.GREEN));
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -53,7 +53,7 @@ public class WorldBorder {
     public void removeWorldBorder(Player player) {
         YamlConfiguration config = GameSettings.getInstance().getConfig();
         try {
-            World world = Bukkit.getWorld(config.getString("worldborder.world"));
+            World world = Bukkit.getWorld(config.getString("worldBorder.world"));
             org.bukkit.WorldBorder border = world.getWorldBorder();
 
             // Größe und Zentrum
@@ -68,19 +68,19 @@ public class WorldBorder {
             border.setWarningTime(15); // Warnungszeit
             border.setWarningDistance(5); // Warnungsdistanz
 
-            config.set("worldborder.world", null);
-            config.set("worldborder.locationX", null);
-            config.set("worldborder.locationZ", null);
-            config.set("worldborder.radius", null);
-            config.set("worldborder.damageBuffer", null);
-            config.set("worldborder.damageAmount", null);
+            config.set("worldBorder.world", null);
+            config.set("worldBorder.locationX", null);
+            config.set("worldBorder.locationZ", null);
+            config.set("worldBorder.radius", null);
+            config.set("worldBorder.damageBuffer", null);
+            config.set("worldBorder.damageAmount", null);
 
             GameSettings.getInstance().save();
 
             player.sendMessage(Component.text("Die World Border wurde erfolgreich gelöscht.", NamedTextColor.GREEN));
 
         } catch (Exception e) {
-            player.sendMessage(Component.text("Es ist ein Fehler beim Löschen der Worldborder aufgetreten.", NamedTextColor.RED));
+            player.sendMessage(Component.text("Es ist ein Fehler beim Löschen der World Border aufgetreten.", NamedTextColor.RED));
             e.printStackTrace();
         }
     }

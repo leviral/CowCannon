@@ -4,9 +4,7 @@ import me.levple.cowcannon.gui.GameSettings;
 import me.levple.cowcannon.gui.ParticleWorldBorder;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.World;
+import org.bukkit.*;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -29,17 +27,21 @@ public class ParticleWorldBorderCommand implements CommandExecutor, TabCompleter
             player.sendMessage(Component.text("Du darfst diesen Command nicht ausführen.", NamedTextColor.RED));
             return true;
         }
-        if (args.length == 0 || args.length > 2 || (args[0].equalsIgnoreCase("config")) && args.length == 1) {
-            player.sendMessage(Component.text("Nutze /particleworldborder config [radius]| load.", NamedTextColor.RED));
+        if (args.length == 0 || args.length > 4 || (args[0].equalsIgnoreCase("config")) && args.length < 4) {
+            player.sendMessage(Component.text("Nutze /particleworldborder config [radius] [particleType] [particleCount] | load | remove.", NamedTextColor.RED));
             return true;
         }
         if (args[0].equalsIgnoreCase("load") && args.length > 1) {
             player.sendMessage(Component.text("Nutze /particleworldborder load.", NamedTextColor.RED));
             return true;
         }
-        if (args[0].equalsIgnoreCase("config") && args.length == 2) {
+        if (args[0].equalsIgnoreCase("remove") && args.length > 1) {
+            player.sendMessage(Component.text("Nutze /particleworldborder remove.", NamedTextColor.RED));
+            return true;
+        }
+        if (args[0].equalsIgnoreCase("config") && args.length == 4) {
             try {
-                GameSettings.getInstance().setParticleBorder(player.getWorld().getName(), player.getLocation(), Double.parseDouble(args[1]));
+                GameSettings.getInstance().setParticleBorder(player.getWorld().getName(), player.getLocation(), Double.parseDouble(args[1]), args[2], Integer.valueOf(args[3]));
                 player.sendMessage(Component.text("Die Particle World Border wurde erfolgreich gesetzt.", NamedTextColor.GREEN));
             } catch (NumberFormatException e) {
                 e.printStackTrace();
@@ -49,20 +51,35 @@ public class ParticleWorldBorderCommand implements CommandExecutor, TabCompleter
         }
         if (args[0].equalsIgnoreCase("load") && args.length == 1) {
             try {
-                String worldName = GameSettings.getInstance().getConfig().getString("particleborder.world");
+                if (ParticleWorldBorder.getInstance().getTask() != null)
+                    ParticleWorldBorder.getInstance().getTask().cancel();
+                String worldName = GameSettings.getInstance().getConfig().getString("particleBorder.world");
                 World world = Bukkit.getWorld(worldName);
-                double centerX = GameSettings.getInstance().getConfig().getDouble("particleborder.centerX");
-                double centerY = GameSettings.getInstance().getConfig().getDouble("particleborder.centerY");
-                double centerZ = GameSettings.getInstance().getConfig().getDouble("particleborder.centerZ");
-                double borderRadius = GameSettings.getInstance().getConfig().getDouble("particleborder.radius");
+                double centerX = GameSettings.getInstance().getConfig().getDouble("particleBorder.centerX");
+                double centerY = GameSettings.getInstance().getConfig().getDouble("particleBorder.centerY");
+                double centerZ = GameSettings.getInstance().getConfig().getDouble("particleBorder.centerZ");
+                double borderRadius = GameSettings.getInstance().getConfig().getDouble("particleBorder.radius");
+                Particle particleType = Particle.valueOf(GameSettings.getInstance().getConfig().getString("particleBorder.particleType"));
+                int particleCount = GameSettings.getInstance().getConfig().getInt("particleBorder.particleCount");
 
                 Location borderCenter = new Location(world, centerX, centerY, centerZ);
 
-                ParticleWorldBorder.getInstance().startParticleBorder(world, borderRadius, borderCenter);
+                ParticleWorldBorder.getInstance().startParticleBorder(world, borderRadius, borderCenter, particleType, centerX, centerZ, particleCount);
                 player.sendMessage(Component.text("Die Particle World Border wurde erfolgreich geladen.", NamedTextColor.GREEN));
             } catch (Exception e) {
                 e.printStackTrace();
-                player.sendMessage(Component.text("Es ist ein Fehler beim Laden der Particle World Border aufgetreten."));
+                player.sendMessage(Component.text("Es ist ein Fehler beim Laden der Particle World Border aufgetreten.", NamedTextColor.RED));
+            }
+            return true;
+        }
+        if (args[0].equalsIgnoreCase("remove") && args.length == 1) {
+            try {
+                ParticleWorldBorder.getInstance().getTask().cancel();
+                GameSettings.getInstance().removeParticleBorder();
+                player.sendMessage(Component.text("Die Particle World Border wurde erfolgreich gelöscht.", NamedTextColor.GREEN));
+            } catch (Exception e) {
+                e.printStackTrace();
+                player.sendMessage(Component.text("Es ist ein Fehler beim Entfernen der Particle World Border aufgetreten.", NamedTextColor.RED));
             }
             return true;
         }
@@ -76,9 +93,20 @@ public class ParticleWorldBorderCommand implements CommandExecutor, TabCompleter
         if (args.length == 1) {
             suggestions.add("config");
             suggestions.add("load");
+            suggestions.add("remove");
         }
-        if (args[0].equalsIgnoreCase("config") && args.length == 2) {
-            suggestions.add("radius");
+        if (args[0].equalsIgnoreCase("config")) {
+            if (args.length == 2) {
+                suggestions.add("radius");
+            }
+            if (args.length == 3) {
+                for (Particle particleType : Particle.values()) {
+                    suggestions.add(particleType.name().toLowerCase());
+                }
+            }
+            if (args.length == 4) {
+                suggestions.add("particleCount");
+            }
         }
         String currentInput = args[args.length - 1].toLowerCase();
         suggestions.removeIf(s -> !s.toLowerCase().startsWith(currentInput));

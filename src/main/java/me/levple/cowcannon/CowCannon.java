@@ -4,6 +4,7 @@ import me.levple.cowcannon.commands.*;
 import me.levple.cowcannon.gui.GameSettings;
 import me.levple.cowcannon.gui.JoinCounter;
 import me.levple.cowcannon.listeners.PlayerJoin;
+import me.levple.cowcannon.listeners.PlayerMove;
 import me.levple.cowcannon.listeners.PlayerQuit;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -55,6 +56,7 @@ public final class CowCannon extends JavaPlugin {
     private void registerListeners(){
         getServer().getPluginManager().registerEvents(new PlayerJoin(), this);
         getServer().getPluginManager().registerEvents(new PlayerQuit(),this);
+        getServer().getPluginManager().registerEvents(new PlayerMove(), this);
     }
 
     private void registerTabCompletions(){

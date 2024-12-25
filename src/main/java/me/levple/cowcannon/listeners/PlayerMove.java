@@ -1,8 +1,7 @@
 package me.levple.cowcannon.listeners;
 
 import me.levple.cowcannon.gui.GameSettings;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.NamedTextColor;
+import me.levple.cowcannon.gui.ParticleWorldBorder;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -11,10 +10,13 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerMoveEvent;
+import org.bukkit.scheduler.BukkitTask;
 
 public class PlayerMove implements Listener {
 
-    final FileConfiguration config = GameSettings.getInstance().getConfig();
+    private final FileConfiguration config = GameSettings.getInstance().getConfig();
+
+    private BukkitTask task;
 
     @EventHandler
     public void onPlayerMove(PlayerMoveEvent event) {
@@ -24,7 +26,6 @@ public class PlayerMove implements Listener {
         }
 
         Player player = event.getPlayer();
-        Location playerLocation = player.getLocation();
 
         try {
             double centerX = config.getDouble("particleBorder.centerX");
@@ -35,18 +36,16 @@ public class PlayerMove implements Listener {
             World world = Bukkit.getWorld(worldName);
 
             Location borderCenter = new Location(world, centerX, centerY, centerZ);
-            double distance = playerLocation.distance(borderCenter);
+            double deltaX = player.getLocation().getX() - borderCenter.getX();
+            double deltaZ = player.getLocation().getZ() - borderCenter.getZ();
+            double distance2D = Math.sqrt(deltaX * deltaX + deltaZ * deltaZ);
 
-            if (distance > borderRadius) {
-                // Spieler überschreitet die Grenze - teleportiere ihn zurück
-                Location safeLocation = playerLocation.clone().subtract(playerLocation.clone().toVector().subtract(borderCenter.toVector()).normalize());
-                safeLocation.setY(player.getWorld().getHighestBlockYAt(safeLocation)); // Stelle sicher, dass der Spieler nicht in Blöcken feststeckt
-                player.teleport(safeLocation);
-
-                // Informiere den Spieler
-                player.sendMessage(Component.text("Du kannst die Grenze nicht überschreiten!", NamedTextColor.YELLOW));
+            if (distance2D > borderRadius) {
+                ParticleWorldBorder.getInstance().getPlayersOutsideBorder().add(player.getUniqueId());
             }
-
+            else {
+                ParticleWorldBorder.getInstance().getPlayersOutsideBorder().remove(player.getUniqueId());
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }

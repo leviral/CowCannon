@@ -62,9 +62,17 @@ public class ParticleWorldBorderCommand implements CommandExecutor, TabCompleter
                 Particle particleType = Particle.valueOf(GameSettings.getInstance().getConfig().getString("particleBorder.particleType"));
                 int particleCount = GameSettings.getInstance().getConfig().getInt("particleBorder.particleCount");
 
+
+
                 Location borderCenter = new Location(world, centerX, centerY, centerZ);
+                Location playerLocation = player.getLocation();
+
+                double distance = playerLocation.distance(borderCenter);
+                double damageAmount = (distance - borderRadius) * 0.5; // Schaden skaliert mit Entfernung
+                player.damage(damageAmount);
 
                 ParticleWorldBorder.getInstance().startParticleBorder(world, borderRadius, borderCenter, particleType, centerX, centerZ, particleCount);
+                ParticleWorldBorder.getInstance().startBorderDamageTask(world, borderCenter, borderRadius, damageAmount);
                 player.sendMessage(Component.text("Die Particle World Border wurde erfolgreich geladen.", NamedTextColor.GREEN));
             } catch (Exception e) {
                 e.printStackTrace();
@@ -75,6 +83,7 @@ public class ParticleWorldBorderCommand implements CommandExecutor, TabCompleter
         if (args[0].equalsIgnoreCase("remove") && args.length == 1) {
             try {
                 ParticleWorldBorder.getInstance().getTask().cancel();
+                ParticleWorldBorder.getInstance().stopBorderDamageTask();
                 GameSettings.getInstance().removeParticleBorder();
                 player.sendMessage(Component.text("Die Particle World Border wurde erfolgreich gelöscht.", NamedTextColor.GREEN));
             } catch (Exception e) {
